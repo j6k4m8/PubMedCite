@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PubMedCite</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-44566813-1', 'matelsky.com');
+	  ga('send', 'pageview');
+
+	</script>
+</head>
+
+<body>
+	<style type="text/css">
+	abbr {
+		font-weight: bold;
+		text-decoration: underline;
+		cursor: default;
+	}
+
+	a, a:visited {
+		color: red;
+		text-decoration: none;
+	}
+	a:hover {
+		color: blue;
+		text-decoration: none;
+	}
+
+	pre {
+		border-left: 2px solid #dedede;
+		padding: 10px;
+		overflow: scroll;
+	}
+
+	pre, code {
+		background-color: #efefef;
+	}
+
+	.page {
+		width: 50%;
+		margin-left: auto;
+		margin-right: auto;
+		padding: 2em;
+		text-align: justify;
+		background: rgba(250, 250, 250, 0.8);
+		font-family: sans-serif;
+	}
+
+	.title {
+		font-size: 150%;
+		font-family: Georgia, serif;
+		font-weight: bold;
+		text-align: left;
+		border-left: 3px solid #bb3;
+		padding-left: 1em;
+		color: #999;
+	}
+
+	.bookmarklet {
+		border-radius: 5%;
+		box-shadow: 0 0 10px #aaa;
+		background: #bbb;
+		padding: 5px;
+	}
+	</style>
+	<div class='page'>
+
+		<div class="title">
+			Matelsky J. "Efficacy Quantification of Digitalization of Citation Procedures in the Context of Medical Publication." Interwebz, February 2014. Web.
+		</div>
+
+		<h1>Concept</h1>
+		<p>Ya know how sometimes people are all like, "hey kid, you need to deliver to me fifty MLA citations of PubMed articles (selected at random) in two minutes... GO"? I do not think that happens, but it would be an exceptional use of this script.</p>
+
+		<h1>Execution</h1>
+		<p>I checked out a bunch of pages on PubMed, and for the majority of cases, they follow a pretty similar DOM layout with a pretty mediocre labelling system (which is entirely justifiable because I can't think of any time at which one would really have to be looking at that page source). However, with some clever jQuery tomfoolery, I was able to pick out some common themes between the pages, so I wrote the following script to automatically write up an MLA citation for the current page's article.</p>
+
+		<h1>Source</h1>
+		<p>The JavaScript code is super simple &mdash; the only tricky part was making the decision to <a href="http://youmightnotneedjquery.com/">drop jQuery</a> and write everything from scratch in vanilla JS, which definitely paid off in loadtime. This is the whole script:
+<pre>
+var $_$ = function(s) {
+	return document.querySelectorAll(s);
+}
+
+var __cite = function() {
+	var authors = $_$('.auths')[0].textContent.replace(/\d/gi, '');
+	var title = $_$('.rprt h1')[0].textContent;
+	var periodical = $_$('[alsec=jour]')[0].getAttribute('title');
+	var dateAndPage = $_$("div.cit")[0]
+	    .cloneNode(true);
+	dateAndPage.removeChild(dateAndPage.firstChild);
+	dateAndPage = dateAndPage.textContent;
+
+	return authors + " \"" + title + "\". "
+			+ periodical + dateAndPage + " Web.";
+};
+
+prompt("Copy your citation: ", __cite());
+</pre>
+			</p>
+
+	<h1>Moving Forward</h1>
+	<p>I'm planning on adding other formats (APA or Chicago, for example) and the ability to copy styled text instead of just plaintext. If you have requests, my email is below.</p>
+
+	<h1>Take Home Lesson</h1>
+	<p>Go to a PubMed article overview page (I'm not supplying a sample because I have a sneaking suspicion it's illegal for me to do that...but it looks like <code>http://www.ncbi.nlm.nih.gov/pubmed/XXXXX</code>). Plop this Javascript on the page. the <code>__cite()</code> function will return a string (unformatted) that is in proper MLA citation format.</p>
+	<p>Also don't use this in case it's illegal for me to supply this code.</p>
+
+	<h1>...or use a bookmarklet.</h1>
+	<p>Okay, okay... Here you go.</p>
+	<p>Just drag this to your bookmarks bar: <a class="bookmarklet" href="javascript: (function () {
+    var jsCode = document.createElement('script');
+    jsCode.setAttribute('src', 'http://jordan.matelsky.com/sketch/PubMedCite/pubmedcite.js');
+  document.body.appendChild(jsCode);
+ }());">PubMedCite</a> Then, whenever you want to cite a paper, click that link. (This bookmarklet automatically updates, in case I find a bug or add a feature.) Probably not something you need to have on hand all the time, but it'd probably be useful (as is my current situation) when doing some initial research.</p>
+
+ <p>If you have any questions or want to say hello (or if you're a PubMed exec coming to tell me I'm not allowed to do this), be sure to <a href='&#109;&#97;ilt&#111;&#58;%&#54;A&#111;&#37;72d&#97;n&#64;matelsky&#46;%6&#51;&#111;m'>get in touch</a>!</p>
+
+<br>
+<center>&mdash;<a href="http://jordan.matelsky.com">jordan.matelsky.com</a>&mdash;</center>
+</div>
+
+</body>
+</html>
